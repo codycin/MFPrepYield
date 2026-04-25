@@ -4,35 +4,34 @@ import { gToOz } from "../utils/units";
 import { motion, AnimatePresence } from "framer-motion";
 import EntryActionPanel from "./EntryActionPanel";
 import AddEntry from "./AddEntry";
+import type { Entry } from "../hooks/useEntries";
 
 export default function Entries() {
-  const [entries] = useEntriesContext();
-  const [activeEntry, setActiveEntry] = useState(null);
+  const [entries, setEntries] = useEntriesContext();
+
+  const [activeEntry, setActiveEntry] = useState<Entry | null>(null);
   const [showAddEntry, setShowAddEntry] = useState(false);
-  const [, setEntries] = useEntriesContext();
+
   const deleteEntry = (id: string) => {
-    setEntries((prev) => prev.filter((e) => e.id !== id));
+    setEntries((prev: Entry[]) => prev.filter((e) => e.id !== id));
   };
 
   return (
     <>
       <div className="min-h-screen bg-zinc-950 text-zinc-100 px-4 pt-6">
-        {/* HEADER (MacroFactor style) */}
         <div className="mb-4">
           <h1 className="text-lg font-semibold">Entries</h1>
           <p className="text-xs text-zinc-500">{entries.length} items logged</p>
         </div>
 
-        {/* FEED */}
         <div className="mt-2 divide-y divide-zinc-800">
-          {entries.map((e) => {
+          {entries.map((e: Entry) => {
             const entryUnit = e.unit ?? "g";
             const cookedDisplay =
               entryUnit === "g" ? e.cookedWeight : gToOz(e.cookedWeight);
 
             return (
-              <div className="relative overflow-hidden">
-                {/* 🔴 BACKGROUND DELETE ACTION */}
+              <div key={e.id} className="relative overflow-hidden">
                 <div className="absolute inset-0 flex items-center pr-3">
                   <button
                     onClick={() => deleteEntry(e.id)}
@@ -42,15 +41,12 @@ export default function Entries() {
                   </button>
                 </div>
 
-                {/* 🟡 SWIPEABLE ROW */}
                 <motion.div
-                  key={e.id}
                   drag="x"
                   dragConstraints={{ left: 0, right: 80 }}
                   dragElastic={0.2}
                   className="relative z-10 bg-zinc-950 flex items-center justify-between py-4 px-1"
                 >
-                  {/* LEFT */}
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center">
                       🍽️
@@ -79,7 +75,6 @@ export default function Entries() {
                     </div>
                   </div>
 
-                  {/* RIGHT ACTION */}
                   <button
                     onClick={() => setActiveEntry(e)}
                     className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-zinc-700"
@@ -92,6 +87,7 @@ export default function Entries() {
           })}
         </div>
       </div>
+
       <button
         onClick={() => setShowAddEntry(true)}
         className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-zinc-800 text-white text-2xl shadow-lg flex items-center justify-center"
@@ -99,7 +95,6 @@ export default function Entries() {
         +
       </button>
 
-      {/* ACTION PANEL */}
       <AnimatePresence>
         {activeEntry && (
           <EntryActionPanel
@@ -108,6 +103,7 @@ export default function Entries() {
           />
         )}
       </AnimatePresence>
+
       <AnimatePresence>
         {showAddEntry && (
           <motion.div

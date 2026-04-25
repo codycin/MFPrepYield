@@ -16,7 +16,7 @@ export default function EntryActionPanel({
   entry: Entry | null;
   onClose: () => void;
 }) {
-  const [entries, setEntries] = useEntriesContext();
+  const [, setEntries] = useEntriesContext();
   const [amount, setAmount] = useState<string>("");
 
   if (!entry) return null;
@@ -25,7 +25,6 @@ export default function EntryActionPanel({
   const rawAmount = parsePosNumber(amount || "0");
   const cookedNeeded = Number.isFinite(rawAmount) ? rawAmount * yieldRate : 0;
 
-  const remaining = entry.cookedWeight - parsePosNumber(amount || "0");
   const useEntry = () => {
     const useAmount = parsePosNumber(amount);
 

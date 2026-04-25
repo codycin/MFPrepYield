@@ -35,10 +35,14 @@ function computeYield(raw: number, cooked: number) {
     rawPer100Cooked: (raw / cooked) * 100,
   };
 }
+type Props = {
+  onClose: () => void;
+  onSuccess: () => void;
+};
 
-export default function AddEntry({ onClose, onSuccess }) {
+export default function AddEntry({ onClose, onSuccess }: Props) {
   //For entry local list
-  const [entries, setEntries] = useEntriesContext();
+  const [, setEntries] = useEntriesContext();
   //For input strings
   const [foodId, setFoodId] = useState("");
   const [rawStr, setRawStr] = useState("");
